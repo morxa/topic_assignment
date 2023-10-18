@@ -3,19 +3,35 @@
 import argparse
 import parse
 import clingo
+import logging
+import sys
+
+from dataclasses import dataclass
+
+logging.basicConfig()
+log = logging.getLogger("solver")
+
+
+@dataclass
+class Model:
+    assignment: dict()
+    errors: list
 
 
 class Solver:
 
     def __init__(self):
-        self.assignment = dict()
+        self.model = None
 
     def new_model(self, model):
-        self.assignment = dict()
+        assignment = dict()
+        errors = []
         for symbol in model.symbols(shown=True):
             if symbol.name == 'assign':
-                self.assignment[str(symbol.arguments[0])] = str(
-                    symbol.arguments[1])
+                assignment[str(symbol.arguments[0])] = str(symbol.arguments[1])
+            elif symbol.name == 'error':
+                errors.append(symbol)
+        self.model = Model(assignment, errors)
 
     def solve(self, program):
         control = clingo.Control()
@@ -23,8 +39,8 @@ class Solver:
         control.ground([('base', [])])
         res = control.solve(on_model=self.new_model)
 
-    def get_assignment(self):
-        return self.assignment
+    def get_model(self):
+        return self.model
 
 
 def main():
@@ -44,8 +60,12 @@ def main():
     program += '\n' + parsed_input
     solver = Solver()
     solver.solve(program)
-    assignment = solver.get_assignment()
-    for k, v in assignment.items():
+    model = solver.get_model()
+    if model.errors:
+        for error in model.errors:
+            log.error(error)
+        sys.exit(1)
+    for k, v in model.assignment.items():
         print(f'{k}: {v}')
 
 
