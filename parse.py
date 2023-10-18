@@ -30,6 +30,8 @@ def parse(topic_path, student_paths):
                 continue
             if key == 'team':
                 output += f'team({student}, {val}).\n'
+            elif key == 'own':
+                output += f'own({student}, "{val}").\n'
             else:
                 topic = val.strip()
                 pref = key.strip()

@@ -17,6 +17,8 @@ error("Inconsistent teams", (S1, S2)) :- team(S1, S2), not team(S2, S1).
 error("Multiple teams", S) :- team(S, S1), team(S, S2), S1 != S2.
 error("Inconsistent preferences", (S, T, P1, P2)) :- pref(S, T, P1), pref(S, T, P2), P1 != P2.
 
+% Assign students to the topic they proposed.
+#maximize { 1@4,S : own(S,T), assign(S, T) }.
 % Maximize the number of students assigned to a topic (up to students_per_topic many).
 #maximize { 1@2,S1,T : assign(S,T), assign(S1,T), S < S1 }.
 % Minimize the number of assignments of unranked topics
