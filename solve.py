@@ -5,6 +5,7 @@ import parse
 import clingo
 import logging
 import sys
+import os.path
 
 from dataclasses import dataclass
 
@@ -49,14 +50,16 @@ def main():
                         '--topics',
                         help='The file containing the topics')
     parser.add_argument('-o', '--output', help='The output file')
-    parser.add_argument('-p', '--program', help='Output file for the final program')
+    parser.add_argument('-p',
+                        '--program',
+                        help='Output file for the final program')
     parser.add_argument(
         'preferences',
         help='The file containing the preferences of the students',
         nargs='+')
     args = parser.parse_args()
     parsed_input = parse.parse(args.topics, args.preferences)
-    programfile = open('solve.lp', 'r')
+    programfile = open(os.path.dirname(__file__) + '/solve.lp', 'r')
     program = programfile.read()
     program += '\n' + parsed_input
     if args.program:
