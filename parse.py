@@ -17,8 +17,12 @@ def parse(topic_path, student_paths):
     for topic in topics:
         output += f'topic("{topic}").\n'
     for studentfile in student_paths:
-        student = os.path.basename(studentfile)
-        student = os.path.splitext(student)[0]
+        try:
+            student = os.path.basename(studentfile)
+            student = int(os.path.splitext(student)[0])
+        except (ValueError, IndexError):
+            log.error(f'Invalid student file name: {studentfile}')
+            continue
         output += f'student({student}).\n'
         for line in open(studentfile, 'r'):
             line = line.strip()
