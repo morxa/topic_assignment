@@ -11,6 +11,7 @@ from dataclasses import dataclass
 
 logging.basicConfig()
 log = logging.getLogger("solver")
+log.setLevel(logging.INFO)
 
 
 @dataclass
@@ -21,8 +22,9 @@ class Model:
 
 class Solver:
 
-    def __init__(self):
+    def __init__(self, threads=1):
         self.model = None
+        self.threads = threads
 
     def new_model(self, model):
         assignment = dict()
@@ -38,6 +40,8 @@ class Solver:
         control = clingo.Control()
         control.add('base', [], program)
         control.ground([('base', [])])
+        log.info(f"Solving with {self.threads} threads...")
+        control.configuration.solve.parallel_mode = self.threads
         res = control.solve(on_model=self.new_model)
 
     def get_model(self):
@@ -53,6 +57,11 @@ def main():
     parser.add_argument('-p',
                         '--program',
                         help='Output file for the final program')
+    parser.add_argument('-n',
+                        '--threads',
+                        help='Number of threads',
+                        type=int,
+                        default=1)
     parser.add_argument(
         'preferences',
         help='The file containing the preferences of the students',
@@ -65,7 +74,7 @@ def main():
     if args.program:
         programfile = open(args.program, 'w')
         programfile.write(program)
-    solver = Solver()
+    solver = Solver(args.threads)
     solver.solve(program)
     model = solver.get_model()
     if model.errors:
