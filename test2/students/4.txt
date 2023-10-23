@@ -4,4 +4,4 @@
 Kahneman: Thinking, fast and slow
 3 Munroe: What if?
 
-team s1
+team 1
