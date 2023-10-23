@@ -49,6 +49,7 @@ def main():
                         '--topics',
                         help='The file containing the topics')
     parser.add_argument('-o', '--output', help='The output file')
+    parser.add_argument('-p', '--program', help='Output file for the final program')
     parser.add_argument(
         'preferences',
         help='The file containing the preferences of the students',
@@ -58,6 +59,9 @@ def main():
     programfile = open('solve.lp', 'r')
     program = programfile.read()
     program += '\n' + parsed_input
+    if args.program:
+        programfile = open(args.program, 'w')
+        programfile.write(program)
     solver = Solver()
     solver.solve(program)
     model = solver.get_model()
