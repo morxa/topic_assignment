@@ -2,6 +2,10 @@
 
 import argparse
 import os.path
+import logging
+
+logging.basicConfig()
+log = logging.getLogger("parser")
 
 
 def parse(topic_path, student_paths):
@@ -34,8 +38,14 @@ def parse(topic_path, student_paths):
                 output += f'own({student}, "{val}").\n'
             else:
                 topic = val.strip()
-                pref = key.strip()
-                assert topic in topics, f'Student {student}: unknown topic {topic}, available topics: {topics}'
+                if not topic in topics:
+                    log.error(f'Student {student}: unknown topic "{topic}"')
+                    continue
+                try:
+                    pref = int(key.strip())
+                except ValueError:
+                    log.error(f'Student {student}: invalid preference "{key}"')
+                    continue
                 output += f'pref({student}, "{topic}", {pref}).\n'
     return output
 
