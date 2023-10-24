@@ -85,8 +85,10 @@ def main():
         for error in model.errors:
             log.error(error)
         sys.exit(1)
-    for k, v in model.assignment.items():
-        print(f'{k}: {v}')
+    if args.output:
+        with open(args.output, 'w') as outputfile:
+            for k, v in model.assignment.items():
+                outputfile.write(f'{k}: {v}\n')
 
 
 if __name__ == '__main__':
