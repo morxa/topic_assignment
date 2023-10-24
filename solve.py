@@ -76,8 +76,8 @@ def main():
     program = programfile.read()
     program += '\n' + parsed_input
     if args.program:
-        programfile = open(args.program, 'w')
-        programfile.write(program)
+        with open(args.program, 'w') as programfile:
+            programfile.write(program)
     solver = Solver(args.threads)
     solver.solve(program)
     model = solver.get_model()
