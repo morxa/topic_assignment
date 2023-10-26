@@ -95,6 +95,9 @@ def main():
     if model.errors:
         for error in model.errors:
             log.error(error)
+    log.info(f'Final model:')
+    for k, v in model.assignment.items():
+        log.info(f'{k}: {v}')
     if args.output:
         with open(args.output, 'w') as outputfile:
             for k, v in model.assignment.items():
