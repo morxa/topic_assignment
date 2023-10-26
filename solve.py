@@ -36,10 +36,10 @@ class Solver:
             elif symbol.name == 'error':
                 errors.append(symbol)
         self.model = Model(assignment, errors)
-        log.info("New model:")
+        log.debug("New model:")
         for k, v in self.model.assignment.items():
-            log.info(f'{k}: {v}')
-        log.info("-------------------")
+            log.debug(f'{k}: {v}')
+        log.debug("-------------------")
 
     def solve(self, program):
         control = clingo.Control()
