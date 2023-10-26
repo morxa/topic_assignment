@@ -18,6 +18,7 @@ log.setLevel(logging.INFO)
 class Model:
     assignment: dict()
     errors: list
+    cost: tuple
 
 
 class Solver:
@@ -35,8 +36,8 @@ class Solver:
                 assignment[str(symbol.arguments[0])] = str(symbol.arguments[1])
             elif symbol.name == 'error':
                 errors.append(symbol)
-        self.model = Model(assignment, errors)
-        log.debug("New model:")
+        self.model = Model(assignment, errors, model.cost)
+        log.debug(f"New model with cost {model.cost}:")
         for k, v in self.model.assignment.items():
             log.debug(f'{k}: {v}')
         log.debug("-------------------")
@@ -98,7 +99,7 @@ def main():
     if model.errors:
         for error in model.errors:
             log.error(error)
-    log.info(f'Final model:')
+    log.info(f'Final model with cost {model.cost}:')
     for k, v in model.assignment.items():
         log.info(f'{k}: {v}')
     if args.output:
