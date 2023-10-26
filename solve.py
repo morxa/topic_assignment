@@ -89,6 +89,9 @@ def main():
     solver = Solver(args.threads, args.time_limit)
     solver.solve(program)
     model = solver.get_model()
+    if not model:
+        log.error("No model found!")
+        sys.exit(1)
     if model.errors:
         for error in model.errors:
             log.error(error)
