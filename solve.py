@@ -74,11 +74,14 @@ def main():
                         help='Time limit',
                         type=str,
                         default='umax')
+    parser.add_argument('-v', '--verbose', help='Verbose output', action='store_true')
     parser.add_argument(
         'preferences',
         help='The file containing the preferences of the students',
         nargs='+')
     args = parser.parse_args()
+    if args.verbose:
+        log.setLevel(logging.DEBUG)
     parsed_input = parse.parse(args.topics, args.preferences)
     programfile = open(os.path.dirname(__file__) + '/solve.lp', 'r')
     program = programfile.read()
