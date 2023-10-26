@@ -22,9 +22,10 @@ class Model:
 
 class Solver:
 
-    def __init__(self, threads=1):
+    def __init__(self, threads=1, time_limit='umax'):
         self.model = None
         self.threads = threads
+        self.time_limit = time_limit
 
     def new_model(self, model):
         assignment = dict()
@@ -46,6 +47,8 @@ class Solver:
         control.ground([('base', [])])
         log.info(f"Solving with {self.threads} threads...")
         control.configuration.solve.parallel_mode = self.threads
+        log.info(f"Setting time limit to {self.time_limit}")
+        control.configuration.solve.solve_limit = self.time_limit
         res = control.solve(on_model=self.new_model)
 
     def get_model(self):
@@ -66,6 +69,11 @@ def main():
                         help='Number of threads',
                         type=int,
                         default=1)
+    parser.add_argument('-l',
+                        '--time-limit',
+                        help='Time limit',
+                        type=str,
+                        default='umax')
     parser.add_argument(
         'preferences',
         help='The file containing the preferences of the students',
@@ -78,7 +86,7 @@ def main():
     if args.program:
         with open(args.program, 'w') as programfile:
             programfile.write(program)
-    solver = Solver(args.threads)
+    solver = Solver(args.threads, args.time_limit)
     solver.solve(program)
     model = solver.get_model()
     if model.errors:
