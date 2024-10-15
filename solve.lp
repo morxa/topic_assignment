@@ -1,7 +1,7 @@
 #defined team/2.
 #defined pref/3.
 
-#const students_per_topic = 2.
+%#const students_per_topic = 3.
 
 % Assign at most students_per_topic students to each topic.
 { assign(S, T) : student(S) } students_per_topic :- topic(T).
@@ -20,7 +20,7 @@
 :- assign(S1,T1), assign(S2,T2), not team(S1,_), not team(S2, _), not own(S1,T1), not own(S2,T2), not pref(S1,T1,_), pref(S1,T2,_), pref(S2,T1,_), not pref(S2,T2,_).
 
 error("Inconsistent teams", (S1, S2)) :- team(S1, S2), not team(S2, S1).
-error("Multiple teams", S) :- team(S, S1), team(S, S2), S1 != S2.
+error("Multiple teams", S) :- student(S), #count { S1 : team(S, S1) } > students_per_topic.
 error("Inconsistent preferences", (S, T, P1, P2)) :- pref(S, T, P1), pref(S, T, P2), P1 != P2.
 
 % Assign students to the topic they proposed.

@@ -75,7 +75,11 @@ def main():
                         help='Time limit',
                         type=str,
                         default='umax')
-    parser.add_argument('-v', '--verbose', help='Verbose output', action='store_true')
+    parser.add_argument('--students-per-topic', type=int, default=2)
+    parser.add_argument('-v',
+                        '--verbose',
+                        help='Verbose output',
+                        action='store_true')
     parser.add_argument(
         'preferences',
         help='The file containing the preferences of the students',
@@ -87,6 +91,7 @@ def main():
     programfile = open(os.path.dirname(__file__) + '/solve.lp', 'r')
     program = programfile.read()
     program += '\n' + parsed_input
+    program += '\n' + f'#const students_per_topic = {args.students_per_topic}.'
     if args.program:
         with open(args.program, 'w') as programfile:
             programfile.write(program)
